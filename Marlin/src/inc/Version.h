@@ -25,7 +25,7 @@
  * Release version. Leave the Marlin version or apply a custom scheme.
  */
 #ifndef SHORT_BUILD_VERSION
-  #define SHORT_BUILD_VERSION "E3V2-2.0.x-11-Smith3D.M"
+  #define SHORT_BUILD_VERSION "E3V2-2.0.x-12-Smith3D.M"
 #endif
 
 /**

@@ -1363,9 +1363,6 @@ void HMI_Move_Z() {
         EncoderRate.enabled = false;
         #if HAS_BED_PROBE
           probe.offset.z = dwin_zoffset;
-          char gcode_string[80];
-          sprintf_P(gcode_string, PSTR("M290 Z%.2f"), (dwin_zoffset - last_zoffset));
-          gcode.process_subcommands_now_P(gcode_string);
           TERN_(EEPROM_SETTINGS, settings.save());
         #endif
         if (HMI_ValueStruct.show_mode == -4) {
@@ -1417,14 +1414,14 @@ void HMI_ZoffsetRT() {
         char val1[80];
         char val2[80];
           gcode.process_subcommands_now_P(PSTR("G91" ));
-        sprintf_P(gcode_string, PSTR("G1 Z%.1f F200"), (dwin_zoffset - last_zoffset));
+        sprintf_P(gcode_string, PSTR("G1 Z%.2f F200"), (dwin_zoffset - last_zoffset));
          gcode.process_subcommands_now_P(gcode_string);
          gcode.process_subcommands_now_P(PSTR("G90" ));
 
       #elif ENABLED(BABYSTEPPING)
-        babystep.add_mm(Z_AXIS, (dwin_zoffset - last_zoffset));
+        //babystep.add_mm(Z_AXIS, (dwin_zoffset - last_zoffset));
       #else
-        UNUSED(dwin_zoffset - last_zoffset);
+        //UNUSED(dwin_zoffset - last_zoffset);
       #endif
 
       if (HMI_ValueStruct.show_mode == -4) {
