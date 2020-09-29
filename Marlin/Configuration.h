@@ -629,7 +629,7 @@
 //#define USE_ZMAX_PLUG
 
 // Enable pullup for all endstops to prevent a floating state
-//#define ENDSTOPPULLUPS
+#define ENDSTOPPULLUPS
 #if DISABLED(ENDSTOPPULLUPS)
   // Disable ENDSTOPPULLUPS to set pullups individually
   //#define ENDSTOPPULLUP_XMAX
@@ -989,6 +989,7 @@
  *     O-- FRONT --+
  */
 #define NOZZLE_TO_PROBE_OFFSET {  -42, -12, 0 }
+//#define NOZZLE_TO_PROBE_OFFSET {  38.5, 0, 0 } //Bondtech BMG Bltouch
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
