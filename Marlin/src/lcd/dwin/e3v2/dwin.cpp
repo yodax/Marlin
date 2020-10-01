@@ -1308,13 +1308,7 @@ void HMI_Move_Z() {
     static float last_E_scale = 0;
     ENCODER_DiffState encoder_diffState = Encoder_ReceiveAnalyze();
     if (encoder_diffState != ENCODER_DIFF_NO) {
-      if (encoder_diffState == ENCODER_DIFF_CW) {
-        HMI_ValueStruct.Move_E_scale += EncoderRate.encoderMoveValue;
-      }
-      else if (encoder_diffState == ENCODER_DIFF_CCW) {
-        HMI_ValueStruct.Move_E_scale -= EncoderRate.encoderMoveValue;
-      }
-      else if (encoder_diffState == ENCODER_DIFF_ENTER) {
+      if (Apply_Encoder(encoder_diffState, HMI_ValueStruct.Move_E_scale)) {
         checkkey = Refuel;
         EncoderRate.enabled = false;
         DWIN_Draw_Signed_Float(font8x16, Color_Bg_Black, 3, 1, 216, MBASE(1), HMI_ValueStruct.Move_E_scale);
@@ -1669,7 +1663,7 @@ void HMI_StepXYZE() {
     // Step limit
     if (WITHIN(HMI_flag.step_axis, X_AXIS, E_AXIS))
       //NOMORE(HMI_ValueStruct.Max_Step, default_axis_steps_per_unit[HMI_flag.step_axis] * 2 * MINUNITMULT);
-      NOMORE(HMI_ValueStruct.Max_Step, 8500);
+      NOMORE(HMI_ValueStruct.Max_Step, 8500); //To enable max eStep to 850
     NOLESS(HMI_ValueStruct.Max_Step, MIN_STEP);
     // Step value
     DWIN_Draw_FloatValue(true, true, 0, font8x16, Color_White, Select_Color, 3, 1, 210, MBASE(select_step.now), HMI_ValueStruct.Max_Step);
@@ -2351,7 +2345,7 @@ void HMI_PauseOrStop() {
             host_action_cancel();
           #endif
           #ifdef EVENT_GCODE_SD_ABORT
-            Popup_Window_Home();
+            Popup_Window_Home(true);
             queue.inject_P(PSTR(EVENT_GCODE_SD_ABORT));
           #endif
           dwin_abort_flag = true;
@@ -2436,7 +2430,7 @@ inline void Draw_Refuel_Menu() {
     DWIN_Draw_String(false,false,font8x16,Color_White,Color_Bg_Black, 64, MBASE(2), (char*)"Feed");
     DWIN_Draw_String(false,false,font8x16,Color_White,Color_Bg_Black, 64, MBASE(3), (char*)"Retract");
     queue.inject_P(PSTR("G92 E0"));
-    //current_position.e = HMI_ValueStruct.Move_E_scale = 0;
+    HMI_ValueStruct.Move_E_scale = 100; //Default 10mm feed
     DWIN_Draw_Signed_Float(font8x16, Color_Bg_Black, 3, 1, 216, MBASE(1), HMI_ValueStruct.Move_E_scale);
     //DWIN_Frame_AreaCopy(1, 1, 76, 271-165, 479-393, LBLX, MBASE(1)); // "..."
   Draw_Back_First(select_refuel.now == 0);
@@ -2840,7 +2834,7 @@ void HMI_Control() {
     Popup_Window_Leveling();
     DWIN_UpdateLCD();
     gcode.process_subcommands_now( PSTR("M220 S100"));
-    queue.inject_P(PSTR("G28\nG29"));
+    queue.inject_P(PSTR("G28O\nG29"));
   }
 
 #endif
