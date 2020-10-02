@@ -1,17 +1,17 @@
-Updated 02-10-2020 [V2.0.X.12] 
+Updated 02-10-2020 [V2.0.X.13] 
 -Resume Printing is now working properly
 -Support MicroSD card extension cable (no longer need to reseat extension or restart printer)
 -Default Refuel mm to 10mm
 -Enable #define ENDSTOPPULLUPS (Credit to to Dimitris)
-
+-Prevent changes of zoffset when just turning the knob during live
 -Adding more precompiled firmwares for Filament Sensor & 4.2.7 Mobo
 -Updated to the latest Marlin (02-10-2020)
 
-Updated 21-9-2020 [V2.0.X.11] 
+Updated 21-9-2020 [V2.0.X.12] 
 -English on boot
 -Updated to the latest Marlin (21-09-2020)
 
-Updated 19-9-2020 [V2.0.X.10] - allow estep over 186
+Updated 19-9-2020 [V2.0.X.10~11] - allow estep over 186
 -Bug fixes for Z offset tools (much better accuracy) 
 -Allow E-step over 186, up to 850
 -Updated to the latest Marlin (18-09-2020)
