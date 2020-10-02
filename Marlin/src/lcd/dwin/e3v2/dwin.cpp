@@ -1331,6 +1331,7 @@ void HMI_Move_Z() {
   void HMI_Zoffset() {
     ENCODER_DiffState encoder_diffState = Encoder_ReceiveAnalyze();
     if (encoder_diffState != ENCODER_DIFF_NO) {
+      last_zoffset = dwin_zoffset;
       uint8_t zoff_line;
       switch (HMI_ValueStruct.show_mode) {
         case -4: zoff_line = PREPARE_CASE_ZOFF + MROWS - index_prepare; break;
@@ -1339,8 +1340,13 @@ void HMI_Move_Z() {
       if (Apply_Encoder(encoder_diffState, HMI_ValueStruct.offset_value)) {
         EncoderRate.enabled = false;
         #if HAS_BED_PROBE
-          probe.offset.z = dwin_zoffset;
           TERN_(EEPROM_SETTINGS, settings.save());
+          dwin_zoffset = HMI_ValueStruct.offset_value / 100.0f;
+          probe.offset.z = dwin_zoffset;
+            #if EITHER(BABYSTEP_ZPROBE_OFFSET, JUST_BABYSTEP)
+              if ( (ENABLED(BABYSTEP_WITHOUT_HOMING) || all_axes_known()) && (ENABLED(BABYSTEP_ALWAYS_AVAILABLE) || printer_busy()) )
+                babystep.add_mm(Z_AXIS, dwin_zoffset - last_zoffset);
+            #endif
         #endif
         if (HMI_ValueStruct.show_mode == -4) {
           checkkey = Prepare;
@@ -1355,12 +1361,6 @@ void HMI_Move_Z() {
       }
       NOLESS(HMI_ValueStruct.offset_value, (Z_PROBE_OFFSET_RANGE_MIN) * 100);
       NOMORE(HMI_ValueStruct.offset_value, (Z_PROBE_OFFSET_RANGE_MAX) * 100);
-      last_zoffset = dwin_zoffset;
-      dwin_zoffset = HMI_ValueStruct.offset_value / 100.0f;
-      #if EITHER(BABYSTEP_ZPROBE_OFFSET, JUST_BABYSTEP)
-        if ( (ENABLED(BABYSTEP_WITHOUT_HOMING) || all_axes_known()) && (ENABLED(BABYSTEP_ALWAYS_AVAILABLE) || printer_busy()) )
-          babystep.add_mm(Z_AXIS, dwin_zoffset - last_zoffset);
-      #endif
       DWIN_Draw_Signed_Float(font8x16, Select_Color, 2, 2, 202, MBASE(zoff_line), HMI_ValueStruct.offset_value);
       DWIN_UpdateLCD();
     }
@@ -1373,34 +1373,17 @@ void HMI_ZoffsetRT() {
   char gcode_string[80];
   if (encoder_diffState != ENCODER_DIFF_NO) {
     last_zoffset = probe.offset.z;
-    if (encoder_diffState == ENCODER_DIFF_CW)
-    {
-      HMI_ValueStruct.offset_value += EncoderRate.encoderMoveValue * 1;
-    }
-    else if (encoder_diffState == ENCODER_DIFF_CCW)
-    {
-      HMI_ValueStruct.offset_value -= EncoderRate.encoderMoveValue * 1;
-    }
-     
-    else if (encoder_diffState == ENCODER_DIFF_ENTER) {
+    if (Apply_Encoder(encoder_diffState, HMI_ValueStruct.offset_value)) {
       EncoderRate.enabled = true;
       dwin_zoffset = HMI_ValueStruct.offset_value / 100;
       #if HAS_BED_PROBE
         probe.offset.z = dwin_zoffset;
         settings.save();
-        char val1[80];
-        char val2[80];
-          gcode.process_subcommands_now_P(PSTR("G91" ));
+        gcode.process_subcommands_now_P(PSTR("G91" ));
         sprintf_P(gcode_string, PSTR("G1 Z%.2f F200"), (dwin_zoffset - last_zoffset));
-         gcode.process_subcommands_now_P(gcode_string);
-         gcode.process_subcommands_now_P(PSTR("G90" ));
-
-      #elif ENABLED(BABYSTEPPING)
-        //babystep.add_mm(Z_AXIS, (dwin_zoffset - last_zoffset));
-      #else
-        //UNUSED(dwin_zoffset - last_zoffset);
+        gcode.process_subcommands_now_P(gcode_string);
+        gcode.process_subcommands_now_P(PSTR("G90" ));
       #endif
-
       if (HMI_ValueStruct.show_mode == -4) {
         checkkey = ZTool;
         DWIN_Draw_Signed_Float(font8x16, Color_Bg_Black, 2, 2, 202, MBASE(1), TERN(HAS_ONESTEP_LEVELING, probe.offset.z*100, HMI_ValueStruct.offset_value));
@@ -1410,11 +1393,8 @@ void HMI_ZoffsetRT() {
       return;
     }
     NOLESS(HMI_ValueStruct.offset_value, (Z_PROBE_OFFSET_RANGE_MIN)*100);
-    NOMORE(HMI_ValueStruct.offset_value, (Z_PROBE_OFFSET_RANGE_MAX)*100);
-    if (HMI_ValueStruct.show_mode == -4)
-      DWIN_Draw_Signed_Float(font8x16, Select_Color, 2, 2, 202, MBASE(1), HMI_ValueStruct.offset_value);
-    else
-      DWIN_Draw_Signed_Float(font8x16, Select_Color, 2, 2, 202, MBASE(1), HMI_ValueStruct.offset_value);
+  NOMORE(HMI_ValueStruct.offset_value, (Z_PROBE_OFFSET_RANGE_MAX)*100);
+    DWIN_Draw_Signed_Float(font8x16, Select_Color, 2, 2, 202, MBASE(1), HMI_ValueStruct.offset_value);
     DWIN_UpdateLCD();
   }
 }
@@ -2063,6 +2043,7 @@ void HMI_MainMenu() {
     switch (select_page.now) {
       case 0: // Print File
         checkkey = SelectFile;
+        gcode.process_subcommands_now_P(PSTR("M21" )); //Support MicroSD Card Extension
         Draw_Print_File_Menu();
         break;
 
@@ -3479,11 +3460,11 @@ void HMI_Refuel(void){
             return;
           }
         #endif
-        current_position.e = current_position.e + HMI_ValueStruct.Move_E_scale / 10;
         if (!planner.is_full()) {
           planner.synchronize(); // Wait for planner moves to finish!
           planner.buffer_line(current_position, MMM_TO_MMS(FEEDRATE_E), active_extruder);
         }
+        current_position.e = current_position.e + HMI_ValueStruct.Move_E_scale / 10;
         break;
       case 3: //Retreat
         #ifdef PREVENT_COLD_EXTRUSION
@@ -3494,11 +3475,11 @@ void HMI_Refuel(void){
             return;
           }
         #endif
-        current_position.e = current_position.e - HMI_ValueStruct.Move_E_scale / 10;
         if (!planner.is_full()) {
           planner.synchronize(); // Wait for planner moves to finish!
           planner.buffer_line(current_position, MMM_TO_MMS(FEEDRATE_E), active_extruder);
         }
+        current_position.e = current_position.e - HMI_ValueStruct.Move_E_scale / 10;
         break;
     }
   }

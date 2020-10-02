@@ -1,3 +1,12 @@
+Updated 02-10-2020 [V2.0.X.12] 
+-Resume Printing is now working properly
+-Support MicroSD card extension cable (no longer need to reseat extension or restart printer)
+-Default Refuel mm to 10mm
+-Enable #define ENDSTOPPULLUPS (Credit to to Dimitris)
+
+-Adding more precompiled firmwares for Filament Sensor & 4.2.7 Mobo
+-Updated to the latest Marlin (02-10-2020)
+
 Updated 21-9-2020 [V2.0.X.11] 
 -English on boot
 -Updated to the latest Marlin (21-09-2020)
