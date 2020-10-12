@@ -1952,6 +1952,11 @@ void Draw_Status_Area(const bool with_update) {
     DWIN_Draw_Signed_Float(DWIN_FONT_STAT, Color_Bg_Black, 2, 2, 178, 429, BABY_Z_VAR * 100);
   #endif
 
+  //Preparing live x y z, by cosmoderp advance menu
+  //DWIN_Draw_Signed_Float(font8x16, Color_Bg_Black, 3, 1, 37,  444, current_position[X_AXIS] * MINUNITMULT); //x
+  //DWIN_Draw_Signed_Float(font8x16, Color_Bg_Black, 3, 1, 134, 444, current_position[Y_AXIS] * MINUNITMULT); //y
+  //DWIN_Draw_Signed_Float(font8x16, Color_Bg_Black, 3, 1, 220, 444, current_position[Z_AXIS] * MINUNITMULT); //z
+
   if (with_update) {
     DWIN_UpdateLCD();
     delay(5);
