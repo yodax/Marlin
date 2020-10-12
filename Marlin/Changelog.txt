@@ -1,3 +1,9 @@
+Updated 13-10-2020 [V2.0.X.14]
+-Delete plr when cancelling resume print
+-Improve Refuel feature (faster feed rate 150mm/s)
+-Marlin bug fix (Stop print will now stop properly)
+-Updated to the latest Marlin (12-10-2020)
+
 Updated 02-10-2020 [V2.0.X.13] 
 -Resume Printing is now working properly
 -Support MicroSD card extension cable (no longer need to reseat extension or restart printer)
