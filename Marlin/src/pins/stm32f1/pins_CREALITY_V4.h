@@ -84,6 +84,8 @@
 #ifdef Z_MIN_PROBE_PIN
   #undef Z_MIN_PROBE_PIN
   #define Z_MIN_PROBE_PIN                     PB1   // BLTouch IN
+#else
+  #define Z_MIN_PROBE_PIN                     PB1   // BLTouch IN
 #endif
 
 //
