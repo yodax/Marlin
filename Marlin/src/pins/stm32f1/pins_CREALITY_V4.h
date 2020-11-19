@@ -81,7 +81,12 @@
 #define Y_STOP_PIN                          PA6
 #define Z_STOP_PIN                          PA7
 
-#define Z_MIN_PROBE_PIN                     PB1   // BLTouch IN
+#ifdef Z_MIN_PROBE_PIN
+  #undef Z_MIN_PROBE_PIN
+  #define Z_MIN_PROBE_PIN                     PB1   // BLTouch IN
+#else
+  #define Z_MIN_PROBE_PIN                     PB1   // BLTouch IN
+#endif
 
 //
 // Filament Runout Sensor

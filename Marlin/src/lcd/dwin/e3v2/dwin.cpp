@@ -1305,7 +1305,6 @@ void HMI_Move_Z() {
   }
 
   void HMI_Move_E_Refuel() {
-    static float last_E_scale = 0;
     ENCODER_DiffState encoder_diffState = Encoder_ReceiveAnalyze();
     if (encoder_diffState != ENCODER_DIFF_NO) {
       if (Apply_Encoder(encoder_diffState, HMI_ValueStruct.Move_E_scale)) {
@@ -2527,7 +2526,7 @@ void HMI_Prepare() {
       case PREPARE_CASE_HOME: // Homing
         checkkey = Last_Prepare;
         index_prepare = MROWS;
-        gcode.process_subcommands_now( PSTR("M220 S100"));
+        gcode.process_subcommands_now_P( PSTR("M220 S100"));
         queue.inject_P(PSTR("G28")); // G28 will set home_flag
         Popup_Window_Home();
         break;
@@ -2550,15 +2549,15 @@ void HMI_Prepare() {
           select_ztool.reset();
           Popup_Window_Home(false);
           DWIN_UpdateLCD();
-          gcode.process_subcommands_now( PSTR("M220 S100"));
-          gcode.process_subcommands_now( PSTR("M420 Z0"));
-          gcode.process_subcommands_now( PSTR("G28"));
-          gcode.process_subcommands_now( PSTR("G92 E0"));
+          gcode.process_subcommands_now_P( PSTR("M220 S100"));
+          gcode.process_subcommands_now_P( PSTR("M420 Z0"));
+          gcode.process_subcommands_now_P( PSTR("G28"));
+          gcode.process_subcommands_now_P( PSTR("G92 E0"));
           //gcode.process_subcommands_now_P( PSTR("G1 F4000 Z10"));
           //gcode.process_subcommands_now_P( PSTR("G1 F4000 X145 Y116"));
           gcode.process_subcommands_now_P( PSTR("G1 F60 Z0"));
           gcode.process_subcommands_now_P( PSTR("M211 S0"));
-          gcode.process_subcommands_now( PSTR("M220 S100"));
+          gcode.process_subcommands_now_P( PSTR("M220 S100"));
           planner.synchronize();
           current_position.e = HMI_ValueStruct.Move_E_scale = 0;
           //dwin_zoffset = TERN(HAS_ONESTEP_LEVELING, probe.offset.z, 0);
@@ -2572,9 +2571,9 @@ void HMI_Prepare() {
         select_aux.reset();
         Popup_Window_Home(false);
         DWIN_UpdateLCD();
-        gcode.process_subcommands_now( PSTR("M220 S100"));
-        gcode.process_subcommands_now( PSTR("G28"));
-        gcode.process_subcommands_now( PSTR("G92 E0"));
+        gcode.process_subcommands_now_P( PSTR("M220 S100"));
+        gcode.process_subcommands_now_P( PSTR("G28"));
+        gcode.process_subcommands_now_P( PSTR("G92 E0"));
         planner.synchronize();
         current_position.e = HMI_ValueStruct.Move_E_scale = 0;
         Draw_AUX_Menu();
@@ -2795,7 +2794,7 @@ void HMI_Control() {
   void HMI_Leveling() {
     Popup_Window_Leveling();
     DWIN_UpdateLCD();
-    gcode.process_subcommands_now( PSTR("M220 S100"));
+    gcode.process_subcommands_now_P( PSTR("M220 S100"));
     queue.inject_P(PSTR("G28O\nG29"));
   }
 
@@ -3337,22 +3336,22 @@ void HMI_AUX() {
          index_aux = MROWS;
          //Popup_Window_Aux();
          //DWIN_UpdateLCD();
-        gcode.process_subcommands_now( PSTR("G1 F4000"));
-        gcode.process_subcommands_now( PSTR("G1 Z10"));
-        gcode.process_subcommands_now( PSTR("G1 X20 Y20"));
-        gcode.process_subcommands_now( PSTR("G1 F300 Z0"));
-        gcode.process_subcommands_now( PSTR("M220 S100"));
+        gcode.process_subcommands_now_P( PSTR("G1 F4000"));
+        gcode.process_subcommands_now_P( PSTR("G1 Z10"));
+        gcode.process_subcommands_now_P( PSTR("G1 X20 Y20"));
+        gcode.process_subcommands_now_P( PSTR("G1 F300 Z0"));
+        gcode.process_subcommands_now_P( PSTR("M220 S100"));
         
         planner.synchronize();
         break;
       case 2: // top left
        // checkkey = Move2;
        index_aux = MROWS;
-        gcode.process_subcommands_now( PSTR("G1 F4000"));
-        gcode.process_subcommands_now( PSTR("G1 Z10"));
-        gcode.process_subcommands_now( PSTR("G1 X20 Y200"));
-        gcode.process_subcommands_now( PSTR("G1 F300 Z0"));
-        gcode.process_subcommands_now( PSTR("M220 S100"));
+        gcode.process_subcommands_now_P( PSTR("G1 F4000"));
+        gcode.process_subcommands_now_P( PSTR("G1 Z10"));
+        gcode.process_subcommands_now_P( PSTR("G1 X20 Y200"));
+        gcode.process_subcommands_now_P( PSTR("G1 F300 Z0"));
+        gcode.process_subcommands_now_P( PSTR("M220 S100"));
         planner.synchronize();
         break;
       case 3: // top right
@@ -3362,7 +3361,7 @@ void HMI_AUX() {
         gcode.process_subcommands_now_P( PSTR("G1 Z10"));
         gcode.process_subcommands_now_P( PSTR("G1 X200 Y200"));
         gcode.process_subcommands_now_P( PSTR("G1 F300 Z0"));
-        gcode.process_subcommands_now( PSTR("M220 S100"));
+        gcode.process_subcommands_now_P( PSTR("M220 S100"));
         planner.synchronize();
         break;
       case 4: // bottom right
@@ -3372,7 +3371,7 @@ void HMI_AUX() {
         gcode.process_subcommands_now_P( PSTR("G1 Z10"));
         gcode.process_subcommands_now_P( PSTR("G1 X200 Y20"));
         gcode.process_subcommands_now_P( PSTR("G1 F300 Z0"));
-        gcode.process_subcommands_now( PSTR("M220 S100"));
+        gcode.process_subcommands_now_P( PSTR("M220 S100"));
       planner.synchronize();
          
         break;
@@ -3383,7 +3382,7 @@ void HMI_AUX() {
         gcode.process_subcommands_now_P( PSTR("G1 Z10"));
         gcode.process_subcommands_now_P( PSTR("G1 X145 Y116"));
         gcode.process_subcommands_now_P( PSTR("G1 F300 Z0"));
-        gcode.process_subcommands_now( PSTR("M220 S100"));
+        gcode.process_subcommands_now_P( PSTR("M220 S100"));
         planner.synchronize();
         break;
       default:
@@ -3411,7 +3410,6 @@ void HMI_Refuel(void){
   #endif
 
   char gcode_string[80];
-  static float last_E_scale = 0;
   if (encoder_diffState == ENCODER_DIFF_CW) {
     if (select_refuel.inc(4)) Move_Highlight(1, select_refuel.now);
   }
