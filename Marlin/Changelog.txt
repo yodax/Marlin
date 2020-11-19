@@ -1,3 +1,8 @@
+Updated 20-11-2020 [V2.0.X.15]
+-Clean up codes
+-Marlin bug fix (live z offset adjustment)
+-Updated to the latest Marlin (20-11-2020)
+
 Updated 13-10-2020 [V2.0.X.14]
 -Delete plr when cancelling resume print
 -Improve Refuel feature (faster feed rate 150mm/s)
