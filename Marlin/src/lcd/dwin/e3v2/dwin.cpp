@@ -1345,8 +1345,7 @@ void HMI_Move_Z() {
           dwin_zoffset = HMI_ValueStruct.offset_value / 100.0f;
           probe.offset.z = dwin_zoffset;
             #if EITHER(BABYSTEP_ZPROBE_OFFSET, JUST_BABYSTEP)
-              if ( (ENABLED(BABYSTEP_WITHOUT_HOMING) || all_axes_known()) && (ENABLED(BABYSTEP_ALWAYS_AVAILABLE) || printer_busy()) )
-                babystep.add_mm(Z_AXIS, dwin_zoffset - last_zoffset);
+              if (BABYSTEP_ALLOWED()) babystep.add_mm(Z_AXIS, dwin_zoffset - last_zoffset);
             #endif
         #endif
         checkkey = HMI_ValueStruct.show_mode == -4 ? Prepare : Tune;
