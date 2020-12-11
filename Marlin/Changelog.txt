@@ -1,6 +1,6 @@
-Updated 06-12-2020 [V2.0.X.16]
+Updated 11-12-2020 [V2.0.X.16]
 -Marlin bug fix (jerk control)
--Updated to the latest Marlin (06-12-2020)
+-Updated to the latest Marlin (11-12-2020)
 
 Updated 20-11-2020 [V2.0.X.15]
 -Clean up codes warning (Credit to to NickDevoctomy)
