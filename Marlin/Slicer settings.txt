@@ -1,0 +1,54 @@
+Retraction distance 5 mm
+Retraction speed 25 mm
+Print speed 100 mm/s
+Overhang angle 50
+Material Flow 80%
+
+Reliable feedrate: 200 Filament diameter: 1.75
+Your maximum reliable extrusion speed is 8.02 mm/3 per second.
+Your maximum reliable XY feedrate is 100 mm per second.
+
+Acceleration 600 Junction deviation 0.08
+
+M92 E98.11
+
+>>>M303 E0 S210 U1
+SENDING:M303 E0 S210 U1
+PID Autotune start
+ bias: 171 d: 83 min: 205.78 max: 212.54
+ bias: 165 d: 89 min: 207.50 max: 212.50 Ku: 45.33 Tu: 20.20
+ Classic PID
+ Kp: 27.20 Ki: 2.69 Kd: 68.68
+ bias: 160 d: 94 min: 208.12 max: 212.27 Ku: 57.81 Tu: 18.12
+ Classic PID
+ Kp: 34.69 Ki: 3.83 Kd: 78.55
+ bias: 157 d: 97 min: 208.09 max: 212.38 Ku: 57.49 Tu: 17.96
+ Classic PID
+ Kp: 34.49 Ki: 3.84 Kd: 77.42
+PID Autotune finished! Put the last Kp, Ki and Kd constants from below into Configuration.h
+#define DEFAULT_Kp 34.49
+#define DEFAULT_Ki 3.84
+#define DEFAULT_Kd 77.42
+echo:Unknown command: "05"
+
+>>>M303 E-1 S60 U1
+SENDING:M303 E-1 S60 U1
+PID Autotune start
+ bias: 110 d: 110 min: 59.79 max: 60.38
+ bias: 106 d: 106 min: 59.97 max: 60.37
+ bias: 92 d: 92 min: 59.99 max: 60.37 Ku: 611.07 Tu: 11.87
+ No overshoot
+ Kp: 122.21 Ki: 20.60 Kd: 483.35
+ bias: 92 d: 92 min: 59.95 max: 60.19 Ku: 987.40 Tu: 10.26
+ No overshoot
+ Kp: 197.48 Ki: 38.49 Kd: 675.44
+ bias: 92 d: 92 min: 59.88 max: 60.20 Ku: 746.23 Tu: 10.26
+ No overshoot
+ Kp: 149.25 Ki: 29.09 Kd: 510.47
+PID Autotune finished! Put the last Kp, Ki and Kd constants from below into Configuration.h
+#define DEFAULT_bedKp 149.25
+#define DEFAULT_bedKi 29.09
+#define DEFAULT_bedKd 510.47
+echo:Unknown command: "05"
+
+
