@@ -1,6 +1,6 @@
-Updated 11-12-2020 [V2.0.X.16]
--Marlin bug fix (jerk control)
--Updated to the latest Marlin (11-12-2020)
+Updated 19-12-2020 [V2.0.X.16]
+-Many marlin bug fixes
+-Updated to the latest Marlin (19-12-2020)
 
 Updated 20-11-2020 [V2.0.X.15]
 -Clean up codes warning (Credit to to NickDevoctomy)
@@ -66,3 +66,10 @@ Updated 28-7-2020 [V2.0.X.5]
 Updated 25-7-2020 [V2.0.X.4]
 -Adjusted max bed size back to 220 as some users are facing issue where it's printing outside of edge. 
 -Previous version was using value of 220 + 15 as it helps BLTouch to probe nearer to edge for better mesh output.
+
+Internal Reference
+
+#define FILAMENT_RUNOUT_SENSOR
+#define NOZZLE_TO_PROBE_OFFSET
+#define BLTOUCH_HS_MODE
+#define GRID_MAX_POINTS_X
