@@ -1,3 +1,41 @@
+SWISS
+
+>>>M303 E0 S210 U1
+SENDING:M303 E0 S210 U1
+PID Autotune start
+ bias: 125 d: 125 min: 206.72 max: 213.12
+ bias: 122 d: 122 min: 206.87 max: 213.12
+ bias: 122 d: 122 min: 206.87 max: 213.12 Ku: 49.71 Tu: 19.88
+ Classic PID
+ Kp: 29.82 Ki: 3.00 Kd: 74.12
+ bias: 124 d: 124 min: 206.87 max: 212.58 Ku: 55.37 Tu: 18.92
+ Classic PID
+ Kp: 33.22 Ki: 3.51 Kd: 78.56
+ bias: 121 d: 121 min: 206.87 max: 213.12 Ku: 49.30 Tu: 19.40
+ Classic PID
+ Kp: 29.58 Ki: 3.05 Kd: 71.73
+PID Autotune finished! Put the last Kp, Ki and Kd constants from below into Configuration.h
+#define DEFAULT_Kp 29.58
+#define DEFAULT_Ki 3.05
+#define DEFAULT_Kd 71.73
+echo:Unknown command: "05"
+>>>M500
+SENDING:M500
+
+E-STEPS
+>>>M92 E138.18
+SENDING:M92 E138.18
+
+
+Reduce the retraction amount. Maximum recommended retraction is 1.5mm @ 35mm/sec.
+Retraction 1.4 @ 25 mm/sec
+
+
+
+=========================
+
+
+
 Retraction distance 5 mm
 Retraction speed 25 mm
 Print speed 100 mm/s
@@ -11,6 +49,21 @@ Your maximum reliable XY feedrate is 100 mm per second.
 Acceleration 600 Junction deviation 0.08
 
 M92 E98.11
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 >>>M303 E0 S210 U1
 SENDING:M303 E0 S210 U1
