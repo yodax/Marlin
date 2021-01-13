@@ -74,3 +74,19 @@ Internal Reference
 #define BLTOUCH_HS_MODE
 #define GRID_MAX_POINTS_X
 #define X_BED_SIZE
+
+#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+
+//For Standard Filament Runout Sensor
+#define FIL_RUNOUT_STATE     HIGH 
+
+//For BTT Filament Smart Sensor
+#define FIL_RUNOUT_STATE     LOW 
+#define FILAMENT_RUNOUT_DISTANCE_MM 7
+#define FILAMENT_MOTION_SENSOR
+//For RaspBerry BTT
+#define HOST_ACTION_COMMANDS
+#define HOST_PROMPT_SUPPORT
+
+Change: #define MOTHERBOARD BOARD_CREALITY_V4
+To: #define MOTHERBOARD BOARD_CREALITY_V427

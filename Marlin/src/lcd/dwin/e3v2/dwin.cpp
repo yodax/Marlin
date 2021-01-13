@@ -3506,9 +3506,8 @@ void HMI_ZTool() {
        case 2: //ReHomeZ
         sprintf_P(gcode_string, PSTR("M851 Z%.2f"), (dwin_zoffset));
         gcode.process_subcommands_now_P(PSTR(gcode_string ));
-        
-        gcode.process_subcommands_now_P( PSTR("G28 Z"));
-        gcode.process_subcommands_now_P( PSTR("G1 F300 Z0"));
+        gcode.process_subcommands_now_P( PSTR("G28 Z")); //Rehome Z only
+        gcode.process_subcommands_now_P( PSTR("G1 F300 Z0")); 
         break;
       default:
         break;
