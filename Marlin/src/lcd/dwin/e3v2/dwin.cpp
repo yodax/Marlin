@@ -2493,7 +2493,8 @@ void HMI_Prepare() {
         else if (index_prepare == 8) Item_Prepare_Home(0);
         else if (index_prepare == 9) Item_Prepare_Offset(0);
         else if (index_prepare == 10) Item_Prepare_ZTool(0);
-        else if (index_prepare == 11) Item_Prepare_Refuel(0);
+        else if (index_prepare == 11) Item_Prepare_AUX(0);
+        else if (index_prepare == 12) Item_Prepare_Refuel(0);
       }
       else {
         Move_Highlight(-1, select_prepare.now + MROWS - index_prepare);
