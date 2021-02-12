@@ -1,3 +1,7 @@
+Updated 12-02-2020 [V2.0.X.17] 
+-With latest addition to the XYZ display (https://github.com/MarlinFirmware/Marlin/pull/20983)
+-Updated to the latest Marlin (12-02-2021)
+
 Updated 19-12-2020 [V2.0.X.16]
 -Many marlin bug fixes
 -Updated to the latest Marlin (19-12-2020)
