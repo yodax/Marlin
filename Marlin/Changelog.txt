@@ -94,3 +94,5 @@ Internal Reference
 
 Change: #define MOTHERBOARD BOARD_CREALITY_V4
 To: #define MOTHERBOARD BOARD_CREALITY_V427
+
+//All Metal Max Temp #define HEATER_0_MAXTEMP 300
