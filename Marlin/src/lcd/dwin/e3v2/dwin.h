@@ -382,3 +382,7 @@ inline void DWIN_StartHoming() { HMI_flag.home_flag = true; }
 
 void DWIN_CompletedHoming();
 void DWIN_CompletedLeveling();
+
+void Print_Status_Message(char * const text);
+void Print_Progress_Update(uint8_t percent, uint32_t remaining);
+void Update_Status_Bar();

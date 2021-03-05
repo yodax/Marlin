@@ -66,7 +66,7 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
   constexpr uint8_t MAX_MESSAGE_LENGTH = 63;
 #endif
 
-#if EITHER(HAS_WIRED_LCD, EXTENSIBLE_UI)
+#if ANY(HAS_WIRED_LCD, EXTENSIBLE_UI,DWIN,DWIN_CREALITY_LCD)
   uint8_t MarlinUI::alert_level; // = 0
   char MarlinUI::status_message[MAX_MESSAGE_LENGTH + 1];
 #endif
@@ -1313,6 +1313,10 @@ void MarlinUI::update() {
     #include "extui/ui_api.h"
   #endif
 
+  #if ENABLED(DWIN_CREALITY_LCD)
+    #include "dwin/e3v2/dwin.h"
+  #endif
+
   bool MarlinUI::has_status() { return (status_message[0] != '\0'); }
 
   void MarlinUI::set_status(const char * const message, const bool persist) {
@@ -1380,10 +1384,15 @@ void MarlinUI::update() {
     else
       return;
 
-    set_status_P(msg, -1);
+    #if ENABLED(DWIN_CREALITY_LCD)
+      TERN_(HOST_PROMPT_SUPPORT, host_action_notify_P(msg));
+    #else
+      set_status_P(msg, -1);
+    #endif
   }
 
   void MarlinUI::set_status_P(PGM_P const message, int8_t level) {
+
     if (level < 0) level = alert_level = 0;
     if (level < alert_level) return;
     alert_level = level;
@@ -1425,6 +1434,9 @@ void MarlinUI::update() {
     va_start(args, fmt);
     vsnprintf_P(status_message, MAX_MESSAGE_LENGTH, fmt, args);
     va_end(args);
+    #if ENABLED(DWIN_CREALITY_LCD)
+      TERN_(HOST_PROMPT_SUPPORT, host_action_notify_P(status_message));
+    #endif
     finish_status(level > 0);
   }
 

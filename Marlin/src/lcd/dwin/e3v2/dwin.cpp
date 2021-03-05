@@ -96,7 +96,7 @@
 #define PAUSE_HEAT
 
 #define USE_STRING_HEADINGS
-//#define USE_STRING_TITLES
+#define USE_STRING_TITLES
 
 #define DWIN_FONT_MENU font8x16
 #define DWIN_FONT_STAT font10x20
@@ -157,6 +157,8 @@ HMI_Flag_t HMI_flag{0};
 millis_t dwin_heat_time = 0;
 
 uint8_t checkkey = 0;
+
+char statusmsg[64];
 
 typedef struct {
   uint8_t now, last;
@@ -1221,8 +1223,11 @@ void Goto_PrintProcess() {
 
   // Copy into filebuf string before entry
   char * const name = card.longest_filename();
-  const int8_t npos = _MAX(0U, DWIN_WIDTH - strlen(name) * MENU_CHR_W) / 2;
-  DWIN_Draw_String(false, false, font8x16, Color_White, Color_Bg_Black, npos, 60, name);
+  //const int8_t npos = _MAX(0U, DWIN_WIDTH - strlen(name) * MENU_CHR_W) / 2;
+  //DWIN_Draw_String(false, false, font8x16, Color_White, Color_Bg_Black, npos, 60, name);
+
+  const int8_t npos = _MAX(0U, DWIN_WIDTH - strlen(statusmsg) * MENU_CHR_W) / 2;
+  DWIN_Draw_String(false, false, font8x16, Color_White, Color_Bg_Black, npos, 219, statusmsg);
 
   DWIN_ICON_Show(ICON, ICON_PrintTime, 17, 193);
   DWIN_ICON_Show(ICON, ICON_RemainTime, 150, 191);
@@ -2278,6 +2283,8 @@ void HMI_SelectFile() {
         //  thermalManager.fan_speed[i] = FANON;
       #endif
 
+      //Start Printing
+      statusmsg[0] = '\0';
       Goto_PrintProcess();
     }
   }
@@ -2337,6 +2344,7 @@ void HMI_Printing() {
         select_tune.reset();
         index_tune = MROWS;
         Draw_Tune_Menu();
+        DWIN_Draw_String(false, false, font8x16, Color_White, Color_Bg_Black, (DWIN_WIDTH - strlen(statusmsg) * MENU_CHR_W) / 2, 357, statusmsg);
         break;
       case 1: // Pause
         if (HMI_flag.pause_flag) {
@@ -4041,6 +4049,7 @@ void EachMomentUpdate() {
   if (ELAPSED(ms, next_var_update_ms)) {
     next_var_update_ms = ms + DWIN_VAR_UPDATE_INTERVAL;
     update_variable();
+    Update_Status_Bar();
   }
 
   if (PENDING(ms, next_rts_update_ms)) return;
@@ -4253,3 +4262,83 @@ void DWIN_CompletedLeveling() {
 }
 
 #endif // DWIN_CREALITY_LCD
+
+void Print_Status_Message(char * const text) {
+  LOOP_L_N(i, _MIN((size_t)64, strlen(text))) statusmsg[i] = text[i];
+  statusmsg[_MIN((size_t)64, strlen(text))] = '\0';
+  if (checkkey == PrintProcess) {
+    DWIN_Draw_Rectangle(1, Color_Bg_Black, 8, 214, DWIN_WIDTH-8, 238);
+    const int8_t npos = _MAX(0U, DWIN_WIDTH - strlen(statusmsg) * MENU_CHR_W) / 2;
+    DWIN_Draw_String(false, false, font8x16, Color_White, Color_Bg_Black, npos, 219, statusmsg);
+  }
+  else {
+    DWIN_Draw_Rectangle(1, Color_Bg_Black, 8, 352, DWIN_WIDTH-8, 376);
+    const int8_t npos = _MAX(0U, DWIN_WIDTH - strlen(statusmsg) * MENU_CHR_W) / 2;
+    DWIN_Draw_String(false, false, font8x16, Color_White, Color_Bg_Black, npos, 357, statusmsg);
+  }
+}
+
+void Update_Status_Bar() {
+  static bool new_msg = true;
+  static uint8_t msgscrl = 0;
+  static char lastmsg[64];
+  if (strcmp_P(lastmsg, statusmsg) != 0) {
+      strcpy_P(lastmsg, statusmsg);
+      msgscrl = 0;
+      new_msg = true;
+    }
+    size_t len = strlen(statusmsg);
+    int8_t pos = len;
+    if (pos > 30) {
+      pos -= msgscrl;
+      len = pos;
+      if (len > 30)
+        len = 30;
+      char dispmsg[len+1];
+      if (pos >= 0) {
+        LOOP_L_N(i, len) dispmsg[i] = statusmsg[i+msgscrl];
+      }
+      else {
+        LOOP_L_N(i, 30+pos) dispmsg[i] = ' ';
+        LOOP_S_L_N(i, 30+pos, 30) dispmsg[i] = statusmsg[i-(30+pos)];
+      }
+      dispmsg[len] = '\0';
+      if (checkkey == PrintProcess) {
+        DWIN_Draw_Rectangle(1, Color_Bg_Black, 8, 214, DWIN_WIDTH-8, 238);
+        const int8_t npos = (DWIN_WIDTH - 30 * MENU_CHR_W) / 2;
+        DWIN_Draw_String(false, false, DWIN_FONT_MENU, Color_White, Color_Bg_Black, npos, 219, dispmsg);
+      }
+      else {
+        DWIN_Draw_Rectangle(1, Color_Bg_Black, 8, 352, DWIN_WIDTH-8, 376);
+        const int8_t npos = (DWIN_WIDTH - 30 * MENU_CHR_W) / 2;
+        DWIN_Draw_String(false, false, DWIN_FONT_MENU, Color_White, Color_Bg_Black, npos, 357, dispmsg);
+      }
+      if (-pos >= 30)
+        msgscrl = 0;
+      msgscrl++;
+    } else {
+      if (new_msg) {
+        new_msg = false;
+        if (checkkey == PrintProcess) {
+          DWIN_Draw_Rectangle(1, Color_Bg_Black, 8, 214, DWIN_WIDTH-8, 238);
+          const int8_t npos = (DWIN_WIDTH - strlen(statusmsg) * MENU_CHR_W) / 2;
+          DWIN_Draw_String(false, false, DWIN_FONT_MENU, Color_White, Color_Bg_Black, npos, 219, statusmsg);
+        }
+        else {
+          DWIN_Draw_Rectangle(1, Color_Bg_Black, 8, 352, DWIN_WIDTH-8, 376);
+          const int8_t npos = (DWIN_WIDTH - strlen(statusmsg) * MENU_CHR_W) / 2;
+          DWIN_Draw_String(false, false, DWIN_FONT_MENU, Color_White, Color_Bg_Black, npos, 357, statusmsg);
+        }
+      }
+    }
+}
+
+void Print_Progress_Update(uint8_t percent, uint32_t remaining) {
+  _card_percent = percent;
+  _remain_time = remaining * 60;
+  if (checkkey == PrintProcess || HMI_flag.done_confirm_flag) {
+    Draw_Print_ProgressBar();
+    Draw_Print_ProgressRemain();
+    Draw_Print_ProgressElapsed();
+  }
+}
